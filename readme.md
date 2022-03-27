@@ -1,0 +1,1 @@
+# Event aggregator - case study
