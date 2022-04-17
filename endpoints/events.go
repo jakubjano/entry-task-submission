@@ -12,6 +12,7 @@ type EventRouter struct {
 	EventList *logic.EventList
 }
 
+// PostEventHandler
 func (e *EventRouter) PostEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
@@ -32,11 +33,11 @@ func (e *EventRouter) PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jbytes)
 
 	e.EventList.SaveEvent(event)
-	fmt.Println(e.EventList)
 
 	return
 }
 
+// GetEventHandler
 func (e *EventRouter) GetEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
@@ -45,10 +46,16 @@ func (e *EventRouter) GetEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	from, to, t, err := ParseQueryParams(r.URL.Query())
+	from, to, t, err := parseQueryParams(r.URL.Query())
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(fmt.Sprintf("Error parsing data: %s", err.Error())))
+		return
+	}
+	errValid := validateInput(from, to, t)
+	if errValid != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Error validating data: %s", errValid.Error())))
 		return
 	}
 	clicks := e.EventList.AggregateEvent(from, to, t)
@@ -59,6 +66,4 @@ func (e *EventRouter) GetEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(clicksBytes)
-	fmt.Println(string(clicksBytes))
-
 }
