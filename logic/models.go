@@ -21,18 +21,15 @@ func (e *EventList) SaveEvent(event Event) {
 // Returns aggregated events called clicks where count of events in each specified
 // interval t is an item in a slice
 func (e *EventList) AggregateEvent(from int64, to int64, t int64) (clicks []click) {
+	// filter events from-to
 	var subset []Event
 	for _, item := range *e {
-		if item.CreatedAt >= from && item.CreatedAt <= to {
+		if item.CreatedAt >= from && item.CreatedAt < to {
 			subset = append(subset, item)
 		}
 	}
 
-	// j is for indexing in slice eventCount
-	// i adds up to the last unix timestamp in from to time range
-	// if last iteration i+t > to redeclare t
-	for i, j := from, 0; i < to; i, j = i+t, j+1 {
-
+	for i := from; i < to; i = i + t {
 		// This if statement handles last iteration where possibility of i+t
 		// being greater than to arise
 		if i+t > to {

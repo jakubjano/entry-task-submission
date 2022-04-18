@@ -44,8 +44,6 @@ func stringConv(s string) (i int64, err error) {
 // Takes time range and interval t from a request that are later used in event aggregation
 // Basic scenarios where parsed unix timestamps are
 func validateInput(from, to, t int64) (err error) {
-	//todo implement methods on input struct {from, to, t} ?
-	// chain errors ? wrapping ?
 	if to-from < 0 {
 		err = errors.New("to must be greater than from")
 		return err

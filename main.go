@@ -16,7 +16,6 @@ func main() {
 	// time intervals for postman requests
 	//fmt.Println(time.Now().Unix())
 	//fmt.Println(time.Now().Add(-time.Minute * 100).Unix())
-
 	r.HandleFunc("/click", server.PostEventHandler)
 	r.HandleFunc("/aggregate", server.GetEventHandler)
 	log.Fatal(http.ListenAndServe(":8080", r))
